@@ -1,0 +1,16 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  color-scheme: dark;
+  font-family: "Gill Sans", sans-serif;
+}
+button {
+  border: none;
+  background: none;
+}
+li {
+  list-style: none;
+}
