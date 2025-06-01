@@ -1,5 +1,21 @@
+import { ROUTES } from "@/shared/models/routes";
+import { Link } from "react-router-dom";
+import { AuthLayout } from "./authLayout";
+import { LoginForm } from "./ui/loginForm";
+
 function LoginPage() {
-  return <div>Login page</div>;
+  return (
+    <AuthLayout
+      title="Вход в систему"
+      description="Введите ваш email и пароль для входа в систему"
+      form={<LoginForm/>}
+      footerText={
+        <>
+          Нет аккаунта? <Link to={ROUTES.REGISTER}>Зарегистрироваться</Link>
+        </>
+      }
+    />
+  );
 }
 
 export const Component = LoginPage;
