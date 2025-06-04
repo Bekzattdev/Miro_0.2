@@ -1,6 +1,6 @@
 import { ROUTES } from "@/shared/models/routes";
 import { Link } from "react-router-dom";
-import { AuthLayout } from "./authLayout";
+import { AuthLayout } from "./ui/authLayout";
 import { RegisterForm } from "./ui/registerForm";
 
 function RegisterPage() {
