@@ -10,8 +10,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
-
+      
 paths:
   /auth/login:
     post:

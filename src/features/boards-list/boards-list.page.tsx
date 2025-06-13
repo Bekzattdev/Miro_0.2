@@ -9,6 +9,11 @@ import { href, Link } from "react-router-dom";
 function BoardsListPage() {
   const queryClient = useQueryClient();
   const boardsQuery = rqClient.useQuery("get", "/boards");
+  const {data} = rqClient.useQuery("post","/auth/refresh") 
+
+console.log(data);
+
+
   const createMutation = rqClient.useMutation("post", "/boards", {
     onSettled: async () => {
       await queryClient.invalidateQueries(
@@ -16,6 +21,7 @@ function BoardsListPage() {
       );
     },
   });
+
   const deleteMutation = rqClient.useMutation("delete", "/boards/{boardId}", {
     onSettled: async () => {
       await queryClient.invalidateQueries(
@@ -23,6 +29,7 @@ function BoardsListPage() {
       );
     },
   });
+
   return (
     <div className="container mx-auto p-4">
       <h1>Boards list {CONFIG.API_BASE_URL}</h1>
