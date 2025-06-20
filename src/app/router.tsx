@@ -2,22 +2,35 @@ import { createBrowserRouter, redirect } from "react-router-dom";
 import { App } from "./app";
 import { ROUTES } from "@/shared/models/routes";
 import { Providers } from "./providers";
+import { ProtectedLoader, ProtectedRoute } from "./protectedRoute";
+import { AppHeader } from "@/features/header";
 
 export const router = createBrowserRouter([
   {
-    element:
-    <Providers>
-
-      <App/>
-    </Providers>,
+    element: (
+      <Providers>
+        <App />
+      </Providers>
+    ),
     children: [
       {
-        path: ROUTES.BOARDS,
-        lazy: () => import("@/features/boards-list/boards-list.page"),
-      },
-      {
-        path: ROUTES.BOARD,
-        lazy: () => import("@/features/board/board.page"),
+        loader: ProtectedLoader, 
+        element: (
+          <>
+            <AppHeader />
+            <ProtectedRoute />
+          </>
+        ),
+        children: [
+          {
+            path: ROUTES.BOARDS,
+            lazy: () => import("@/features/boards-list/boards-list.page"),
+          },
+          {
+            path: ROUTES.BOARD,
+            lazy: () => import("@/features/board/board.page"),
+          },
+        ],
       },
       {
         path: ROUTES.LOGIN,

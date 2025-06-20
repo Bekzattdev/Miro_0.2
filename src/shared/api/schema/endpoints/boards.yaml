@@ -4,61 +4,130 @@ schemas:
     required:
       - id
       - name
+      - createAt
+      - updatedAt
+      - lastOpenedAt
+      - isFavorite
+
     properties:
       id:
         type: string
       name:
         type: string
-  CreateBoard:
-    type: object
-    required:
-      - name
-    properties:
-      name:
+      createAt:
         type: string
+        format: date-time
+      updatedAt:
+        type: string
+        format: date-time
+      lastOpenedAt:
+        type: string
+        format: date-time
+      isFavorite:
+        type: boolean
 
+    RenameBoard:
+      type: object
+      reqired:
+        - name
+      properties:
+        name:
+          type: string
+
+    UpdateBoardFavorite:
+      type: object
+      reqired:
+        - isFavorite
+      properties:
+        nisFavorite:
+          type: boolean
+    
+    BoardList:
+      type: object
+      required:
+        - data
+        - total
+        - totalPages
+      properties:
+        data:
+        type: array
+        items:
+          $ref: '#/schemas/Board'
+        total:
+         type: integer
+        totalPages:
+          type: integer
 
 getAllBoards:
   summary: Get all boards for current user
   security:
     - bearerAuth: []
   responses:
-    '200':
+    "200":
       description: List of boards
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: '#/schemas/Board'
-    '401':
-      $ref: '../shared/responses.yaml#/UnauthorizedError'
+              $ref: "#/schemas/BoardsList"
+    "401":
+      $ref: "../shared/responses.yaml#/UnauthorizedError"
 
 createBoard:
   summary: Create a new board
   security:
     - bearerAuth: []
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          required:
-            - name
-          properties:
-            name:
-              type: string
   responses:
-    '201':
+    "201":
       description: Board created successfully
       content:
         application/json:
           schema:
-            $ref: '#/schemas/Board'
-    '401':
-      $ref: '../shared/responses.yaml#/UnauthorizedError'
+            $ref: "#/schemas/Board"
+    "401":
+      $ref: "../shared/responses.yaml#/UnauthorizedError"
 
+renameBoard:
+  summary: Rename a board
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: boardId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      appilication/json:
+        schema:
+          $ref: "#/schemas/RenameBoard"
+
+updateBoardFavorite:
+  summary: Upadate a board favorite
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: boardId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      appilication/json:
+        schema:
+          $ref: "#/schemas/updateBoardFavorite "
+  responses:
+    "201":
+      description: Board created successfully
+      content:
+        application/json:
+          schema:
+            $ref: "#/schemas/Board"
+    "401":
+      $ref: "../shared/responses.yaml#/UnauthorizedError"
 
 deleteBoard:
   summary: Delete a board
@@ -71,9 +140,9 @@ deleteBoard:
       schema:
         type: string
   responses:
-    '204':
+    "204":
       description: Board deleted successfully
-    '401':
-      $ref: '../shared/responses.yaml#/UnauthorizedError'
-    '404':
-      $ref: '../shared/responses.yaml#/NotFoundError'
+    "401":
+      $ref: "../shared/responses.yaml#/UnauthorizedError"
+    "404":
+      $ref: "../shared/responses.yaml#/NotFoundError"
