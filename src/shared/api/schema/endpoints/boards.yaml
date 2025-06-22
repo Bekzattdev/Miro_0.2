@@ -4,17 +4,16 @@ schemas:
     required:
       - id
       - name
-      - createAt
+      - createdAt
       - updatedAt
       - lastOpenedAt
       - isFavorite
-
     properties:
       id:
         type: string
       name:
         type: string
-      createAt:
+      createdAt:
         type: string
         format: date-time
       updatedAt:
@@ -25,52 +24,104 @@ schemas:
         format: date-time
       isFavorite:
         type: boolean
-
-    RenameBoard:
-      type: object
-      reqired:
-        - name
-      properties:
-        name:
-          type: string
-
-    UpdateBoardFavorite:
-      type: object
-      reqired:
-        - isFavorite
-      properties:
-        nisFavorite:
-          type: boolean
-    
-    BoardList:
-      type: object
-      required:
-        - data
-        - total
-        - totalPages
-      properties:
-        data:
+  RenameBoard:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+  UpdateBoardFavorite:
+    type: object
+    required:
+      - isFavorite
+    properties:
+      isFavorite:
+        type: boolean
+  BoardsList:
+    type: object
+    required:
+      - list
+      - total
+      - totalPages
+    properties:
+      list:
         type: array
         items:
-          $ref: '#/schemas/Board'
-        total:
-         type: integer
-        totalPages:
-          type: integer
+          $ref: "#/schemas/Board"
+      total:
+        type: integer
+      totalPages:
+        type: integer
 
 getAllBoards:
   summary: Get all boards for current user
   security:
     - bearerAuth: []
+  parameters:
+    - name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1
+    - name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 10
+    - name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - createdAt
+          - updatedAt
+          - lastOpenedAt
+          - name
+    - name: isFavorite
+      in: query
+      required: false
+      schema:
+        type: boolean
+    - name: search
+      in: query
+      required: false
+      schema:
+        type: string
   responses:
     "200":
       description: List of boards
       content:
         application/json:
           schema:
-              $ref: "#/schemas/BoardsList"
+            $ref: "#/schemas/BoardsList"
     "401":
       $ref: "../shared/responses.yaml#/UnauthorizedError"
+
+getBoardById:
+  summary: Get a board by id
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: boardId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Board
+      content:
+        application/json:
+          schema:
+            $ref: "#/schemas/Board"
+    "401":
+      $ref: "../shared/responses.yaml#/UnauthorizedError"
+    "404":
+      $ref: "../shared/responses.yaml#/NotFoundError"
 
 createBoard:
   summary: Create a new board
@@ -99,12 +150,21 @@ renameBoard:
   requestBody:
     required: true
     content:
-      appilication/json:
+      application/json:
         schema:
           $ref: "#/schemas/RenameBoard"
+  responses:
+    "201":
+      description: Board created successfully
+      content:
+        application/json:
+          schema:
+            $ref: "#/schemas/Board"
+    "401":
+      $ref: "../shared/responses.yaml#/UnauthorizedError"
 
 updateBoardFavorite:
-  summary: Upadate a board favorite
+  summary: Update a board favorite
   security:
     - bearerAuth: []
   parameters:
@@ -116,9 +176,9 @@ updateBoardFavorite:
   requestBody:
     required: true
     content:
-      appilication/json:
+      application/json:
         schema:
-          $ref: "#/schemas/updateBoardFavorite "
+          $ref: "#/schemas/UpdateBoardFavorite"
   responses:
     "201":
       description: Board created successfully
